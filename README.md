@@ -24,7 +24,7 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
   </tr>
 </table>
 
-Pretrained model can be downloaded by clicking on the model link above.
+Results reported on Karpathy test split. Pretrained model can be downloaded by clicking on the model link above.
 
 <h3> Data preparation </h3>
 
@@ -42,10 +42,12 @@ Unzip all files and place the folders in 'data' folder.
 
 Next, download the <a target = "_blank" href="https://imagecaption.blob.core.windows.net/imagecaption/trainval_36.zip">bottom up image features</a>.
 
-Unzip the folder and place unzipped folder in bottom-up_features folder.  
+Unzip the folder and place unzipped folder in 'bottom-up_features' folder.  
+
+<br>
 
 Next type this command in a python 2 environment: 
-```python
+```bash
 python bottom-up_features/tsv.py
 ```
 
@@ -54,12 +56,13 @@ This command will create the following files -
 <li>An HDF5 file containing the bottom up image features for train and val splits, 36 per image for each split, in an I, 36, 2048 tensor where I is the number of images in the split.</li>
 <li>PKL files that contain training and validation image IDs mapping to index in HDF5 dataset created above.</li>
 </ul>
+
 Move these files to the folder 'final_dataset'.
 
 <br>
 
 Next, type this command: 
-```python
+```bash
 python create_input_files.py
 ```
 
@@ -84,7 +87,7 @@ This will install all the files needed for evaluation.
 <h3> Training </h3>
 
 To train the bottom-up top down model from scratch, type:
-```python
+```bash
 python train.py
 ```
 
@@ -102,7 +105,7 @@ Dropout is set to 0.5. Batch size is set to 100. 36 pretrained bottom-up feature
 <h3> Evaluation </h3>
 
 To evaluate the model, type:
-```python
+```bash
 python eval.py
 ```
 
