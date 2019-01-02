@@ -119,7 +119,7 @@ Code adapted with thanks from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-
 
 Evaluation code adapted from https://github.com/Maluuba/nlg-eval/tree/master/nlgeval
 
-Tips for improving model performance sourced from https://github.com/hengyuan-hu/bottom-up-attention-vqa
+Tips for improving model performance and code for converting bottom-up features tsv file to hdf5 files sourced from https://github.com/hengyuan-hu/bottom-up-attention-vqa
 
 https://machinelearningmastery.com/teacher-forcing-for-recurrent-neural-networks/
 
