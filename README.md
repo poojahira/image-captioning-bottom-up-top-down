@@ -104,7 +104,7 @@ Dropout is set to 0.5. Batch size is set to 100. 36 pretrained bottom-up feature
 
 <h3> Evaluation </h3>
 
-To evaluate the model, type:
+To evaluate the model on the karpathy test split, edit the eval.py file to include the model checkpoint location and then type:
 ```bash
 python eval.py
 ```
