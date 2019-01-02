@@ -15,7 +15,7 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
     <th>CIDEr</th>
   </tr>
   <tr>
-    <td>Bottom Up, Top Down Model with RELU gate</td>
+    <td><a target = "_blank" href="https://drive.google.com/open?id=19U83mLoMLnTOyKKkbA590WDqIo0srHIb">Bottom Up, Top Down Model with RELU gate</a></td>
     <td>27</td>
     <td>36.1</td>
     <td>27.2</td>
@@ -24,6 +24,7 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
   </tr>
 </table>
 
+Pretrained model can be downloaded by clicking on the model link above.
 
 <h3> Data preparation </h3>
 
@@ -37,15 +38,15 @@ Also download Andrej Karpathy's <a target = "_blank" href=http://cs.stanford.edu
 
 Unzip all files and place the folders in 'data' folder.
 
+<br>
 
-
-Next, download the <a target = "_blank" href = https://imagecaption.blob.core.windows.net/imagecaption/trainval_36.zip>bottom up image features</a>.
+Next, download the <a target = "_blank" href="https://imagecaption.blob.core.windows.net/imagecaption/trainval_36.zip">bottom up image features</a>.
 
 Unzip the folder and place unzipped folder in bottom-up_features folder.  
 
 Next type this command in a python 2 environment: 
 ```python
-python tsv.py
+python bottom-up_features/tsv.py
 ```
 
 This command will create the following files - 
@@ -55,6 +56,7 @@ This command will create the following files -
 </ul>
 Move these files to the folder 'final_dataset'.
 
+<br>
 
 Next, type this command: 
 ```python
@@ -69,7 +71,9 @@ This command will create the following files -
 <li>A JSON file which contains the word_map, the word-to-index dictionary.</li>
 </ul>
 
-Next go to nlg_eval_master folder and type the following two commands:
+<br>
+
+Next, go to nlg_eval_master folder and type the following two commands:
 ```bash
 pip install -e .
 nlg-eval --setup
