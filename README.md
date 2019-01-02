@@ -1,6 +1,6 @@
 <h1> Image captioning using Bottom-up, Top-down Attention</h1>
 
-This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down Attention as implemened <a href=http://www.panderson.me/up-down-attention>here</a>. Training and evaluation is done on the MSCOCO Image captioning challenge dataset. Bottom up features for MSCOCO dataset are extracted using Faster R-CNN object detection model trained on Visual Genome dataset. Pretrained features are downloaded from <a href =https://github.com/peteanderson80/bottom-up-attention>here</a>.
+This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down Attention as described <a href=http://www.panderson.me/up-down-attention>here</a>. Training and evaluation is done on the MSCOCO Image captioning challenge dataset. Bottom up features for MSCOCO dataset are extracted using Faster R-CNN object detection model trained on Visual Genome dataset. Pretrained features are downloaded from <a href =https://github.com/peteanderson80/bottom-up-attention>here</a>.
 
 
 <h3> Results obtained </h3> 
