@@ -4,11 +4,11 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
 
 
 <h3> Results obtained </h3> 
-
+/***
 | Model | BLEU - 4 | METEOR | ROUGE - L | CIDEr |
 |-----------------------------------------------|
 |Bottom-up,Top-down attention with ReLU| 36.1 | 27.2 | 56.3 | 112.4 |
-
+***/
 
 
 <h3> Data preparation </h3>
