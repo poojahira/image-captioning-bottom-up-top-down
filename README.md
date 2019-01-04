@@ -24,7 +24,7 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
   </tr>
 </table>
 
-Results reported on Karpathy test split. Pretrained model can be downloaded by clicking on the model link above.
+Results reported on Karpathy test split. Results almost similar to original paper. Pretrained model can be downloaded by clicking on the model link above.
 
 <h3> Data preparation </h3>
 
