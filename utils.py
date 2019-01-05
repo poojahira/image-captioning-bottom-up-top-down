@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import os
 import numpy as np
 import h5py
@@ -13,22 +9,6 @@ from collections import Counter
 from random import seed, choice, sample
 from itertools import repeat
 import pickle
-
-import _init_paths
-import sys
-import argparse
-import pprint
-import pdb
-import time
-import cv2
-from torch.autograd import Variable
-import torch.nn as nn
-import torch.optim as optim
-
-import torchvision.transforms as transforms
-import torchvision.datasets as dset
-import pdb
-
 
 def create_input_files(dataset,karpathy_json_path,captions_per_image, min_word_freq,output_folder,max_len=100):
     """
