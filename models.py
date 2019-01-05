@@ -125,9 +125,10 @@ class DecoderWithAttention(nn.Module):
         # Create tensors to hold word predicion scores
         predictions = torch.zeros(batch_size, max(decode_lengths), vocab_size).to(device)
 
-        # At each time-step, pass the language model's previous hidden state,
-        # attention-weighing the encoder's output based on the decoder's previous hidden state output
-        # then generate a new word in the decoder with the previous word and the attention weighted encoding
+        # At each time-step, pass the language model's previous hidden state, the mean pooled bottom up features and
+        # word embeddings to the top down attention model. Then pass the hidden state of the top down model and the bottom up 
+        # features to the attention block. The attention weighed bottom up features and hidden state of the top down attention model
+        # are then passed to the language model 
         for t in range(max(decode_lengths)):
             batch_size_t = sum([l > t for l in decode_lengths])
             h1,c1 = self.top_down_attention(
