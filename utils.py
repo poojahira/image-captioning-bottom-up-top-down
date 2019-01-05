@@ -167,7 +167,7 @@ def save_checkpoint(data_name, epoch, epochs_since_improvement,decoder,decoder_o
              'bleu-4': bleu4,
              'decoder': decoder,
              'decoder_optimizer': decoder_optimizer}
-    filename = str(epoch) + 'checkpoint_' + data_name + '.pth.tar'
+    filename = 'checkpoint_' + data_name + '.pth.tar'
     torch.save(state, filename)
     # If this checkpoint is the best so far, store a copy so it doesn't get overwritten by a worse checkpoint
     if is_best:
