@@ -33,16 +33,11 @@ Results reported on Karpathy test split. Pretrained model can be downloaded by c
 
 <h3> Requirements </h3>
 
-python 3.6
-
-torch 0.4.1
-
-h5py 2.8
-
-tqdm 4.26
-
-nltk 3.3
-
+python 3.6<br>
+torch 0.4.1<br>
+h5py 2.8<br>
+tqdm 4.26<br>
+nltk 3.3<br>
 
 <h3> Data preparation </h3>
 
