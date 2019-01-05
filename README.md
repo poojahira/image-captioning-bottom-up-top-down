@@ -14,7 +14,7 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
     <th>CIDEr</th>
   </tr>
   <tr>
-    <td><a target = "_blank" href="https://drive.google.com/open?id=19U83mLoMLnTOyKKkbA590WDqIo0srHIb">Bottom Up, Top Down Model with RELU activation</a></td>
+    <td>Bottom Up, Top Down Model with RELU activation</td>
     <td>36.1</td>
     <td>27.2</td>
     <td>56.3</td>
@@ -29,7 +29,7 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
     </tr>
 </table>
 
-Results reported on Karpathy test split. Pretrained model can be downloaded by clicking on the model link above.
+Results reported on Karpathy test split.
 
 <h3> Requirements </h3>
 
