@@ -14,7 +14,7 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
     <th>CIDEr</th>
   </tr>
   <tr>
-    <td><a target = "_blank" href="https://drive.google.com/open?id=19U83mLoMLnTOyKKkbA590WDqIo0srHIb">Bottom Up, Top Down Model with RELU gate</a></td>
+    <td><a target = "_blank" href="https://drive.google.com/open?id=19U83mLoMLnTOyKKkbA590WDqIo0srHIb">Bottom Up, Top Down Model with RELU activation</a></td>
     <td>36.1</td>
     <td>27.2</td>
     <td>56.3</td>
