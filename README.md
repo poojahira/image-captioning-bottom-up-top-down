@@ -8,7 +8,6 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
 <table class="tg">
   <tr>
     <th>Model</th>
-    <th>Epoch</th>
     <th>BLEU-4</th>
     <th>METEOR</th>
     <th>ROUGE-L</th>
@@ -16,15 +15,21 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
   </tr>
   <tr>
     <td><a target = "_blank" href="https://drive.google.com/open?id=19U83mLoMLnTOyKKkbA590WDqIo0srHIb">Bottom Up, Top Down Model with RELU gate</a></td>
-    <td>27</td>
     <td>36.1</td>
     <td>27.2</td>
     <td>56.3</td>
     <td>112.4</td>
   </tr>
+  <tr>
+    <td>Original paper implementation</td>
+    <td>36.2</td>
+    <td>27.0</td>
+    <td>56.4</td>
+    <td>113.5</td>
+    </tr>
 </table>
 
-Results reported on Karpathy test split. Results almost similar to original paper. Pretrained model can be downloaded by clicking on the model link above.
+Results reported on Karpathy test split. Pretrained model can be downloaded by clicking on the model link above.
 
 <h3> Data preparation </h3>
 
