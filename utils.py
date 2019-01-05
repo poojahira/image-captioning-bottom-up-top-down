@@ -149,41 +149,6 @@ def init_embedding(embeddings):
     torch.nn.init.uniform_(embeddings, -bias, bias)
 
 
-def load_embeddings(emb_file, word_map):
-    """
-    Creates an embedding tensor for the specified word map, for loading into the model.
-
-    :param emb_file: file containing embeddings (stored in GloVe format)
-    :param word_map: word map
-    :return: embeddings in the same order as the words in the word map, dimension of embeddings
-    """
-
-    # Find embedding dimension
-    with open(emb_file, 'r') as f:
-        emb_dim = len(f.readline().split(' ')) - 1
-
-    vocab = set(word_map.keys())
-
-    # Create tensor to hold embeddings, initialize
-    embeddings = torch.FloatTensor(len(vocab), emb_dim)
-    init_embedding(embeddings)
-
-    # Read embedding file
-    print("\nLoading embeddings...")
-    for line in open(emb_file, 'r'):
-        line = line.split(' ')
-
-        emb_word = line[0]
-        embedding = list(map(lambda t: float(t), filter(lambda n: n and not n.isspace(), line[1:])))
-
-        # Ignore word if not in train_vocab
-        if emb_word not in vocab:
-            continue
-
-        embeddings[word_map[emb_word]] = torch.FloatTensor(embedding)
-
-    return embeddings, emb_dim
-
 def save_checkpoint(data_name, epoch, epochs_since_improvement,decoder,decoder_optimizer,
                     bleu4, is_best):
     """
@@ -192,9 +157,7 @@ def save_checkpoint(data_name, epoch, epochs_since_improvement,decoder,decoder_o
     :param data_name: base name of processed dataset
     :param epoch: epoch number
     :param epochs_since_improvement: number of epochs since last improvement in BLEU-4 score
-    :param encoder: encoder model
     :param decoder: decoder model
-    :param encoder_optimizer: optimizer to update encoder's weights, if fine-tuning
     :param decoder_optimizer: optimizer to update decoder's weights
     :param bleu4: validation BLEU-4 score for this epoch
     :param is_best: is this checkpoint the best so far?
