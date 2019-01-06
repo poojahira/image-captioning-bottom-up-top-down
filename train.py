@@ -66,8 +66,9 @@ def main():
     # Move to GPU, if available
     decoder = decoder.to(device)
 
-    # Loss function
-    criterion = nn.CrossEntropyLoss().to(device)
+    # Loss functions
+    criterion_ce = nn.CrossEntropyLoss().to(device)
+    criterion_dis = nn.MultiLabelMarginLoss().to(device)
 
     # Custom dataloaders
     train_loader = torch.utils.data.DataLoader(
@@ -89,14 +90,16 @@ def main():
         # One epoch's training
         train(train_loader=train_loader,
               decoder=decoder,
-              criterion=criterion,
+              criterion_ce = criterion_ce,
+              criterion_dis=criterion_dis,
               decoder_optimizer=decoder_optimizer,
               epoch=epoch)
 
         # One epoch's validation
         recent_bleu4 = validate(val_loader=val_loader,
                                 decoder=decoder,
-                                criterion=criterion)
+                                criterion_ce=criterion_ce,
+                                criterion_dis=criterion_dis)
 
         # Check if there was an improvement
         is_best = recent_bleu4 > best_bleu4
@@ -111,12 +114,13 @@ def main():
         save_checkpoint(data_name, epoch, epochs_since_improvement, decoder,decoder_optimizer, recent_bleu4, is_best)
 
 
-def train(train_loader, decoder, criterion, decoder_optimizer, epoch):
+def train(train_loader, decoder, criterion_ce, criterion_dis, decoder_optimizer, epoch):
     """
     Performs one epoch's training.
     :param train_loader: DataLoader for training data
     :param decoder: decoder model
-    :param criterion: loss layer
+    :param criterion_ce: cross entropy loss layer
+    :param criterion_dis : discriminative loss layer
     :param decoder_optimizer: optimizer to update decoder's weights
     :param epoch: epoch number
     """
@@ -140,10 +144,18 @@ def train(train_loader, decoder, criterion, decoder_optimizer, epoch):
         caplens = caplens.to(device)
 
         # Forward prop.
-        scores, caps_sorted, decode_lengths, sort_ind = decoder(imgs, caps, caplens)
+        scores, scores_d,caps_sorted, decode_lengths, sort_ind = decoder(imgs, caps, caplens)
+        
+        #Max-pooling across predicted words across time steps for discriminative supervision
+        scores_d = scores_d.max(1)[0]
 
         # Since we decoded starting with <start>, the targets are all words after <start>, up to <end>
         targets = caps_sorted[:, 1:]
+        targets_d = torch.zeros(scores_d.size(0),scores_d.size(1)).to(device)
+        targets_d.fill_(-1)
+
+        for length in decode_lengths:
+            targets_d[:,:length-1] = targets[:,:length-1]
 
         # Remove timesteps that we didn't decode at, or are pads
         # pack_padded_sequence is an easy trick to do this
@@ -151,13 +163,15 @@ def train(train_loader, decoder, criterion, decoder_optimizer, epoch):
         targets, _ = pack_padded_sequence(targets, decode_lengths, batch_first=True)
 
         # Calculate loss
-        loss = criterion(scores, targets)
-
+        loss_d = criterion_dis(scores_d,targets_d.long())
+        loss_g = criterion_ce(scores, targets)
+        loss = loss_g + (10 * loss_d)
+        
         # Back prop.
         decoder_optimizer.zero_grad()
         loss.backward()
-
-	# Clip gradients when they are getting too large
+	
+        # Clip gradients when they are getting too large
         torch.nn.utils.clip_grad_norm_(filter(lambda p: p.requires_grad, decoder.parameters()), 0.25)
 
         # Update weights
@@ -183,12 +197,13 @@ def train(train_loader, decoder, criterion, decoder_optimizer, epoch):
                                                                           top5=top5accs))
 
 
-def validate(val_loader, decoder, criterion):
+def validate(val_loader, decoder, criterion_ce, criterion_dis):
     """
     Performs one epoch's validation.
     :param val_loader: DataLoader for validation data.
     :param decoder: decoder model
-    :param criterion: loss layer
+    :param criterion_ce: cross entropy loss layer
+    :param criterion_dis : discriminative loss layer
     :return: BLEU-4 score
     """
     decoder.eval()  # eval mode (no dropout or batchnorm)
@@ -203,65 +218,76 @@ def validate(val_loader, decoder, criterion):
     hypotheses = list()  # hypotheses (predictions)
 
     # Batches
-    for i, (imgs, caps, caplens,allcaps) in enumerate(val_loader):
+    with torch.no_grad(): 
+        for i, (imgs, caps, caplens,allcaps) in enumerate(val_loader):
 
-        # Move to device, if available
-        imgs = imgs.to(device)
-        caps = caps.to(device)
-        caplens = caplens.to(device)
+            # Move to device, if available
+            imgs = imgs.to(device)
+            caps = caps.to(device)
+            caplens = caplens.to(device)
 
-        scores, caps_sorted, decode_lengths, sort_ind = decoder(imgs, caps, caplens)
+            scores, scores_d, caps_sorted, decode_lengths, sort_ind = decoder(imgs, caps, caplens)
+            
+            #Max-pooling across predicted words across time steps for discriminative supervision
+            scores_d = scores_d.max(1)[0]
 
-        # Since we decoded starting with <start>, the targets are all words after <start>, up to <end>
-        targets = caps_sorted[:, 1:]
+            # Since we decoded starting with <start>, the targets are all words after <start>, up to <end>
+            targets = caps_sorted[:, 1:]
+            targets_d = torch.zeros(scores_d.size(0),scores_d.size(1)).to(device)
+            targets_d.fill_(-1)
 
-        # Remove timesteps that we didn't decode at, or are pads
-        # pack_padded_sequence is an easy trick to do this
-        scores_copy = scores.clone()
-        scores, _ = pack_padded_sequence(scores, decode_lengths, batch_first=True)
-        targets, _ = pack_padded_sequence(targets, decode_lengths, batch_first=True)
+            for length in decode_lengths:
+                targets_d[:,:length-1] = targets[:,:length-1]
 
-        # Calculate loss
-        loss = criterion(scores, targets)
+            # Remove timesteps that we didn't decode at, or are pads
+            # pack_padded_sequence is an easy trick to do this
+            scores_copy = scores.clone()
+            scores, _ = pack_padded_sequence(scores, decode_lengths, batch_first=True)
+            targets, _ = pack_padded_sequence(targets, decode_lengths, batch_first=True)
 
-        # Keep track of metrics
-        losses.update(loss.item(), sum(decode_lengths))
-        top5 = accuracy(scores, targets, 5)
-        top5accs.update(top5, sum(decode_lengths))
-        batch_time.update(time.time() - start)
+            # Calculate loss
+            loss_d = criterion_dis(scores_d,targets_d.long())
+            loss_g = criterion_ce(scores, targets)
+            loss = loss_g + (10 * loss_d)
 
-        start = time.time()
+            # Keep track of metrics
+            losses.update(loss.item(), sum(decode_lengths))
+            top5 = accuracy(scores, targets, 5)
+            top5accs.update(top5, sum(decode_lengths))
+            batch_time.update(time.time() - start)
 
-        if i % print_freq == 0:
-            print('Validation: [{0}/{1}]\t'
-                  'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'Top-5 Accuracy {top5.val:.3f} ({top5.avg:.3f})\t'.format(i, len(val_loader), batch_time=batch_time,
-                                                                            loss=losses, top5=top5accs))
+            start = time.time()
 
-        # Store references (true captions), and hypothesis (prediction) for each image
-        # If for n images, we have n hypotheses, and references a, b, c... for each image, we need -
-        # references = [[ref1a, ref1b, ref1c], [ref2a, ref2b], ...], hypotheses = [hyp1, hyp2, ...]
+            if i % print_freq == 0:
+                print('Validation: [{0}/{1}]\t'
+                      'Batch Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
+                      'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
+                      'Top-5 Accuracy {top5.val:.3f} ({top5.avg:.3f})\t'.format(i, len(val_loader), batch_time=batch_time,
+                                                                                loss=losses, top5=top5accs))
 
-        # References
-        allcaps = allcaps[sort_ind]  # because images were sorted in the decoder
-        for j in range(allcaps.shape[0]):
-            img_caps = allcaps[j].tolist()
-            img_captions = list(
-                map(lambda c: [w for w in c if w not in {word_map['<start>'], word_map['<pad>']}],
-                    img_caps))  # remove <start> and pads
-            references.append(img_captions)
+            # Store references (true captions), and hypothesis (prediction) for each image
+            # If for n images, we have n hypotheses, and references a, b, c... for each image, we need -
+            # references = [[ref1a, ref1b, ref1c], [ref2a, ref2b], ...], hypotheses = [hyp1, hyp2, ...]
 
-        # Hypotheses
-        _, preds = torch.max(scores_copy, dim=2)
-        preds = preds.tolist()
-        temp_preds = list()
-        for j, p in enumerate(preds):
-            temp_preds.append(preds[j][:decode_lengths[j]])  # remove pads
-        preds = temp_preds
-        hypotheses.extend(preds)
+            # References
+            allcaps = allcaps[sort_ind]  # because images were sorted in the decoder
+            for j in range(allcaps.shape[0]):
+                img_caps = allcaps[j].tolist()
+                img_captions = list(
+                    map(lambda c: [w for w in c if w not in {word_map['<start>'], word_map['<pad>']}],
+                        img_caps))  # remove <start> and pads
+                references.append(img_captions)
 
-        assert len(references) == len(hypotheses)
+            # Hypotheses
+            _, preds = torch.max(scores_copy, dim=2)
+            preds = preds.tolist()
+            temp_preds = list()
+            for j, p in enumerate(preds):
+                temp_preds.append(preds[j][:decode_lengths[j]])  # remove pads
+            preds = temp_preds
+            hypotheses.extend(preds)
+
+            assert len(references) == len(hypotheses)
 
     # Calculate BLEU-4 scores
     bleu4 = corpus_bleu(references, hypotheses)
