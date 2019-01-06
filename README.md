@@ -6,7 +6,7 @@ This is a PyTorch implementation of <a href=http://www.panderson.me/up-down-atte
   <li> Discriminative supervision in addition to cross-entropy loss</li></ul>
 
 
-<h3> Results obtained </h3> 
+<h2> Results obtained </h2> 
 
 <table class="tg">
   <tr>
@@ -34,7 +34,7 @@ This is a PyTorch implementation of <a href=http://www.panderson.me/up-down-atte
 
 Results reported on Karpathy test split. Pretrained model can be downloaded by clicking on the link above.
 
-<h3> Requirements </h3>
+<h2> Requirements </h2>
 
 python 3.6<br>
 torch 0.4.1<br>
@@ -42,7 +42,7 @@ h5py 2.8<br>
 tqdm 4.26<br>
 nltk 3.3<br>
 
-<h3> Data preparation </h3>
+<h2> Data preparation </h2>
 
 Create a folder called 'data'
 
@@ -100,7 +100,7 @@ nlg-eval --setup
 This will install all the files needed for evaluation.
 
 
-<h3> Training </h3>
+<h2> Training </h2>
 
 To train the bottom-up top down model from scratch, type:
 ```bash
@@ -116,7 +116,7 @@ Gradients are clipped during training to prevent gradient explosion that is not 
 Dropout is set to 0.5. Batch size is set to 100. 36 pretrained bottom-up feature maps per image are used as input to the Top-down Attention model. The Adamax optimizer is used with a learning rate of 2e-3. Early stopping is employed if the BLEU-4 score of the validation set shows no improvement over 20 epochs.
 
 
-<h3> Evaluation </h3>
+<h2> Evaluation </h2>
 
 To evaluate the model on the karpathy test split, edit the eval.py file to include the model checkpoint location and then type:
 ```bash
