@@ -127,7 +127,7 @@ Beam search is used to generate captions during evaluation. Beam search iterativ
 
 The metrics reported are ones used most often in relation to image captioning and include BLEU-4, CIDEr, METEOR and ROUGE-L. Official MSCOCO evaluation scripts are used for measuring these scores.
   
-<h3>References</h3>
+<h2>References</h2>
 
 Code adapted with thanks from https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning
 
