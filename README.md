@@ -1,6 +1,10 @@
 <h1> Image captioning using Bottom-up, Top-down Attention</h1>
 
-This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down Attention as described <a href=http://www.panderson.me/up-down-attention>here</a>. Training and evaluation is done on the MSCOCO Image captioning challenge dataset. Bottom up features for MSCOCO dataset are extracted using Faster R-CNN object detection model trained on Visual Genome dataset. Pretrained bottom-up features are downloaded from <a href =https://github.com/peteanderson80/bottom-up-attention>here</a>.
+This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down Attention as described by <a href=http://www.panderson.me/up-down-attention>Anderson et. al.</a>. Training and evaluation is done on the MSCOCO Image captioning challenge dataset. Bottom up features for MSCOCO dataset are extracted using Faster R-CNN object detection model trained on Visual Genome dataset. Pretrained bottom-up features are downloaded from <a href =https://github.com/peteanderson80/bottom-up-attention>here</a>. Modifications made to the original model:
+<ul>
+  <li> ReLU activation instead of Tanh gate in Attention model</li>
+  <li> Discriminative supervision in addition to cross-entropy loss</li>
+<\ul>
 
 
 <h3> Results obtained </h3> 
@@ -14,11 +18,11 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
     <th>CIDEr</th>
   </tr>
   <tr>
-    <td>This implementation</td>
-    <td>36.1</td>
-    <td>27.2</td>
-    <td>56.3</td>
-    <td>112.4</td>
+    <td><a href="https://drive.google.com/file/d/10atC8rY7PdhnKW08INO33mEXYUyQ6G0N/view?usp=sharing">This implementation</a></td>
+    <td>35.9</td>
+    <td>26.9</td>
+    <td>56.2</td>
+    <td>111.5</td>
   </tr>
   <tr>
     <td>Original paper implementation</td>
@@ -29,7 +33,7 @@ This is a PyTorch implementation of Image Captioning using Bottom-up, Top-down A
     </tr>
 </table>
 
-Results reported on Karpathy test split.
+Results reported on Karpathy test split. Pretrained model can be downloaded by clicking on the link above.
 
 <h3> Requirements </h3>
 
